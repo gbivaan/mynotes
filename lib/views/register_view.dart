@@ -35,58 +35,55 @@ class _RegisterViewState extends State<RegisterView> {
       appBar: AppBar(
         title: const Text('Register'),
       ),
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              return Column(
-                children: [
-                  TextField(
-                    controller: _email,
-                    decoration: const InputDecoration(
-                        hintText: "Enter your Email here"),
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  TextField(
-                    controller: _password,
-                    decoration: const InputDecoration(
-                        hintText: "Enter your Password here"),
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      final email = _email.text;
-                      final password = _password.text;
-                      try {
-                        final userCredential = await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                                email: email, password: password);
-                        print(userCredential);
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'weak-password') {
-                          print('Password is too Weak');
-                        } else if (e.code == 'email-already-in-use') {
-                          print('Email is Already in Use');
-                        } else if (e.code == 'invalid-email') {
-                          print('Invalid Email Entered');
-                        }
-                      }
-                    },
-                    child: const Text('Register'),
-                  ),
-                ],
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            decoration:
+                const InputDecoration(hintText: "Enter your Email here"),
+            enableSuggestions: false,
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+          ),
+          TextField(
+            controller: _password,
+            decoration:
+                const InputDecoration(hintText: "Enter your Password here"),
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+          ),
+          TextButton(
+            onPressed: () async {
+              final email = _email.text;
+              final password = _password.text;
+              try {
+                final userCredential = await FirebaseAuth.instance
+                    .createUserWithEmailAndPassword(
+                        email: email, password: password);
+                print(userCredential);
+              } on FirebaseAuthException catch (e) {
+                if (e.code == 'weak-password') {
+                  print('Password is too Weak');
+                } else if (e.code == 'email-already-in-use') {
+                  print('Email is Already in Use');
+                } else if (e.code == 'invalid-email') {
+                  print('Invalid Email Entered');
+                }
+              }
+            },
+            child: const Text('Register'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/login/',
+                (route) => false,
               );
-            default:
-              return const Text('Loading...');
-          }
-        },
+            },
+            child: const Text('Already Registered ? Login Here!'),
+          )
+        ],
       ),
     );
   }
