@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "mynotes",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "8BBEC25C-723C-42F2-A505-A77907B18DF2",
+        },
+       
+       {
+        "name":"mynotes",
+        "request": "launch",
+        "type": "dart",
+        "deviceId": "emulator-5554",
+
+       },
+    ]
+}
