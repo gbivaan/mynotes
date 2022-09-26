@@ -4,7 +4,7 @@ import 'package:mynotes/utilities/dialogs/generic_dialog.dart';
 Future<bool> showDeleteDialog(BuildContext context) {
   return showGenericDialog<bool>(
     context: context,
-    title: 'Log Out',
+    title: 'Delete',
     content: 'Are You Sure you want to delete this item?',
     optionsBuilder: () => {
       'Cancel': false,
