@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/services/crud/crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
@@ -13,11 +11,16 @@ class NotesService {
   List<DatabaseNote> _notes = [];
 
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance();
+  NotesService._sharedInstance() {
+    _noteStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _noteStreamController.sink.add(_notes);
+      },
+    );
+  }
   factory NotesService() => _shared;
 
-  final _noteStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
+  late final StreamController<List<DatabaseNote>> _noteStreamController;
 
   Stream<List<DatabaseNote>> get allNotes => _noteStreamController.stream;
 
@@ -83,7 +86,7 @@ class NotesService {
       where: 'id = ?',
       whereArgs: [id],
     );
-    if (notes.isNotEmpty) {
+    if (notes.isEmpty) {
       throw CouldNotFindNote();
     } else {
       final note = DatabaseNote.fromRow(notes.first);
@@ -107,7 +110,7 @@ class NotesService {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db.delete(
-      userTable,
+      noteTable,
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -132,7 +135,7 @@ class NotesService {
     const text = '';
     //create the note
     final noteId = await db.insert(noteTable, {
-      useridColumn: owner.id,
+      userIdColumn: owner.id,
       textColumn: text,
       isSyncedWithCloudColumn: 1,
     });
@@ -285,17 +288,17 @@ class DatabaseNote {
 
   DatabaseNote.fromRow(Map<String, Object?> map)
       : id = map[idColumn] as int,
-        userId = map[useridColumn] as int,
+        userId = map[userIdColumn] as int,
         text = map[textColumn] as String,
         isSyncedWithCloud =
             (map[isSyncedWithCloudColumn] as int) == 1 ? true : false;
 
   @override
   String toString() =>
-      'Notes, ID = $id, userId = $userId, isSyncedWithCloud = $isSyncedWithCloud, text = $text,';
+      'Note, ID = $id, userId = $userId, isSyncedWithCloud = $isSyncedWithCloud, text = $text,';
 
   @override
-  bool operator ==(covariant DatabaseUser other) => id == other.id;
+  bool operator ==(covariant DatabaseNote other) => id == other.id;
 
   @override
   int get hashCode => id.hashCode;
@@ -306,7 +309,7 @@ const noteTable = 'note';
 const userTable = 'user';
 const idColumn = 'id';
 const emailColumn = 'email';
-const useridColumn = 'user_id';
+const userIdColumn = 'user_id';
 const textColumn = 'text';
 const isSyncedWithCloudColumn = 'is_synced_with_cloud';
 const creatUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
