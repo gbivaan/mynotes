@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         
+        
         {
             "name": "mynotes",
             "request": "launch",
@@ -16,7 +17,7 @@
         "name":"mynotes",
         "request": "launch",
         "type": "dart",
-        "deviceId": "emulator-5554",
+        "deviceId": "1C3C1F7C-B110-4B63-8AF9-DD3E319B67E2",
 
        },
     ]
